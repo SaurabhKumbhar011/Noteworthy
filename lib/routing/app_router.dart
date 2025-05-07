@@ -25,18 +25,20 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           GoRouterRefreshStream(authRepository.authStateChanges()),
       redirect: (context, state) {
         final isLoggedIn = firebaseAuth.currentUser != null;
+        final currentLocation = state.uri.toString();
+
         if (isLoggedIn) {
-          if (state.location == '/sign-in') {
-            return '/home';
-          } else if (state.location == "/sign-up") {
+          if (currentLocation == '/sign-in' || currentLocation == '/sign-up') {
             return '/home';
           }
         } else {
-          if (state.location == '/home') {
+          if (currentLocation == '/home') {
             return '/sign-up';
           }
         }
+        return null; // <- Required to satisfy return type
       },
+
       routes: [
         GoRoute(
             path: "/sign-in",
